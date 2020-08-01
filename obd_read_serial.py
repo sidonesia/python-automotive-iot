@@ -1,0 +1,76 @@
+import time
+import serial
+import sys
+import os
+import threading
+import traceback
+
+
+sys.path.append("cfg_config"    )
+sys.path.append("cfg_core"      )
+sys.path.append("cfg_startup"   )
+sys.path.append("obd_model_pid" )
+
+from cfg_config import config
+from cfg_core   import helper
+
+class obd_read_serial(threading.Thread):
+
+    car_obd_cmds   = []
+    handler_list   = []
+    car_pid_buffer = {}
+    serial_cmd     = None
+    loop_go        = True
+
+    def __init__(self, params):
+        threading.Thread.__init__(self)
+
+        self.car_obd_cmds = params["init_cmds"]
+        self.handler_list = params["handler_list"]
+        self.serial_cmd   = params["serial_cmd"]
+    # end def
+
+    def read(self, params):
+        response = helper.response_msg(
+            "SERIAL_SUCCESS", "SERIAL SUCCESS", {} , "0000"
+        )
+        if not self.serial_cmd.isOpen():
+            response.put( "status"      , "SERIAL_FAILED" )
+            response.put( "status_code" , "0001" )
+            response.put( "desc"        , "CONNECTION FAILED" )
+            return response
+        # end if
+        try:
+            while self.loop_go:
+                out = ''.encode()
+                while self.serial_cmd.inWaiting() > 0:
+                    out += self.serial_cmd.read(1)
+                # end while
+                if out.decode().find("41") != -1:
+                    hex_value  = out.decode().replace("\r","").replace(">","").lstrip().rstrip()
+                    length_hex = len( hex_value )
+                    if length_hex == 11:
+                        obd2_hex  = hex_value.split(" ")
+                        A     = obd2_hex[2]
+                        B     = obd2_hex[3]
+                        int_a = int("0x" + A , 16 )
+                        int_b = int("0x" + B , 16 )
+                        rpm   = ((256 * int_a) + int_b) / 4
+                        print ( "[" + str(length_hex) + "] " + hex_value + " [" + str(rpm) + "]")
+                    # end if
+                # end if
+                time.sleep( 0.25 )
+            # end while
+        except:
+            print ( traceback.format_exc() )
+            response.put( "status"      , "REALTIME_FAILED" )
+            response.put( "desc" , "GENERAL ERROR" )
+            response.put( "status_code" , "9999" )
+        # end try
+        return response
+    # end def
+
+    def run(self):
+        self.read({})
+    # end def
+# end class
