@@ -16,7 +16,7 @@ from cfg_core   import helper
 import obd_pid
 
 
-class obd_pid_rpm(obd_pid.obd_pid):
+class obd_pid_speed(obd_pid.obd_pid):
 
 
     def __init__(self, params):
@@ -39,7 +39,7 @@ class obd_pid_rpm(obd_pid.obd_pid):
         try:
             hex_value  = self._current_obd_data.replace("\r","").replace(">","").lstrip().rstrip()
             length_hex = len( hex_value )
-            if self._rpm_length != length_hex:
+            if self._speed_length != length_hex:
                 response.put( "status"      , "CALCULATE_FAILED" )
                 response.put( "status_code" , "0001" )
                 response.put( "desc"        , "LENGTH INCORRECT" )
@@ -47,14 +47,11 @@ class obd_pid_rpm(obd_pid.obd_pid):
             # end if
             obd2_hex = hex_value.split(" ")
             A        = obd2_hex[2]
-            B        = obd2_hex[3]
-            int_a    = int("0x" + A , 16 )
-            int_b    = int("0x" + B , 16 )
-            rpm      = ((256 * int_a) + int_b) / 4
-            print ( "[" + str(length_hex) + "] " + hex_value + " [" + str(rpm) + "]")
+            speed    = int("0x" + A , 16 )
+            print ( "[" + str(length_hex) + "] " + hex_value + " [" + str(speed) + "]")
             response.put( "data" , { 
-                "pid_handler"    : self._current_pid_data, 
-                "pid_result"     : rpm 
+                "pid_handler": self._current_pid_data, 
+                "pid_result" : speed 
             })
         except:
             print ( traceback.format_exc() )

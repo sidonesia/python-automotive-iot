@@ -18,6 +18,7 @@ class obd_write_serial(threading.Thread):
 
     car_obd_cmds   = []
     handler_list   = []
+    handler_dict   = {}
     car_pid_buffer = {}
     serial_cmd     = None
     loop_go        = True
@@ -25,8 +26,9 @@ class obd_write_serial(threading.Thread):
     def __init__(self, params):
         threading.Thread.__init__(self)
 
-        self.write_pid  = params["write_pid"]
-        self.serial_cmd = params["serial_cmd"]
+        self.handler_list  = params["handler_list"]
+        self.handler_dict  = params["handler_dict"]
+        self.serial_cmd    = params["serial_cmd"]
     # end def
 
     def write(self, params):
@@ -55,20 +57,24 @@ class obd_write_serial(threading.Thread):
     def run(self):
         is_open  = self.serial_cmd.isOpen()
         while self.loop_go:
-            # initially write the standard commands
-            obd_resp = self.write({
-                "pid_value" : self.write_pid
-            })
-            time.sleep( config.G_EVENT_INIT_CMD_TO )
-            count_loop     = 0
-            count_loop_max = 20
-            while count_loop < count_loop_max:
-                obd_resp = self.write({
-                    "pid_value" : "\r\n".encode( )
+            for handler_item in self.handler_list:
+                handler      = handler_item["pid_handler"]
+                pid_value    = handler_item["pid_value"]
+                handler_name = handler_item["handler_name"]
+                obd_resp     = self.write({
+                    "pid_value" : pid_value.encode() + " \r\n".encode()
                 })
-                time.sleep(config.G_EVENT_LOOP_WAIT)
-                count_loop += 1
-            # end while
+                time.sleep( config.G_EVENT_LOOP_WAIT )
+                count_loop     = 0
+                count_loop_max = 1 
+                while count_loop < count_loop_max:
+                    obd_resp = self.write({
+                        "pid_value" : "\r\n".encode( )
+                    })
+                    time.sleep(config.G_EVENT_LOOP_WAIT)
+                    count_loop += 1
+                # end while
+            # end for
         # end while
     # end def
 # end class

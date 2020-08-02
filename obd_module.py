@@ -8,5 +8,10 @@ obd_resp = obd.register_handler({
     "pid_value"    : "010C",
     "handler_name" : "RPM"
 })
+obd_resp = obd.register_handler({
+    "handler"      : None,
+    "pid_value"    : "010D",
+    "handler_name" : "SPEED"
+})
 
 obd.start({"blocking" : True})

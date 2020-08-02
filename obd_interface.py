@@ -99,25 +99,18 @@ class obd_interface:
         Main event loop, will annotate later
     """
     def start(self, params):
-        for handler_pid in self.handler_list:
-            handler      = handler_pid["pid_handler"]
-            pid_value    = handler_pid["pid_value"]
-            handler_name = handler_pid["handler_name"]
-            full_pid     = pid_value + " \r\n"
-            full_pid     = full_pid.encode()
-            conn_obd_write_serial = obd_write_serial.obd_write_serial({
-                "write_pid"     : full_pid,
-                "serial_cmd"    : self.serial_cmd
-            })
-            self.writer_threads[pid_value] = conn_obd_write_serial
-            self.writer_threads[pid_value].start()
-        # end for
+        self.conn_obd_write_serial = obd_write_serial.obd_write_serial({
+            "handler_list"      : self.handler_list,
+            "handler_dict"      : self.handler_dict,
+            "serial_cmd"        : self.serial_cmd
+        })
         self.conn_obd_read_serial = obd_read_serial.obd_read_serial({
             "init_cmds"         : self.init_cmds,
             "handler_list"      : self.handler_list,
             "handler_dict"      : self.handler_dict,
             "serial_cmd"        : self.serial_cmd
         })
+        self.conn_obd_write_serial.start()
         self.conn_obd_read_serial.start()
         blocking = params["blocking"]
         if not blocking:

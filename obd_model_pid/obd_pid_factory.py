@@ -4,6 +4,7 @@ import sys
 import os
 
 import obd_pid_rpm
+import obd_pid_speed
 
 class obd_pid_factory:
 
@@ -17,12 +18,16 @@ class obd_pid_factory:
 
     def _load_pid_proc(self, params):
         self._obd_model["010C"] = obd_pid_rpm.obd_pid_rpm({})
+        self._obd_model["010D"] = obd_pid_speed.obd_pid_speed({})
     # end def
 
     def get_pid_proc(self, params):
         obd_data        = params["obd_data"]
         hex_value       = obd_data.replace("\r","").replace(">","").lstrip().rstrip()
         obd_array       = hex_value.split(" ")
+        if len( obd_array ) < 2:
+            return None
+        # end if
         pid_header      = obd_array[1]
         pid             = "01" + pid_header
         pid             = pid.upper()
@@ -39,5 +44,4 @@ class obd_pid_factory:
             "obd_pid"   : pid
         }
     # end def
-    
 # end class
