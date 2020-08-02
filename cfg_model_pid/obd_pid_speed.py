@@ -37,7 +37,8 @@ class obd_pid_speed(obd_pid.obd_pid):
             "CALCULATE_SUCCESS", "CALCULATE SUCCESS", {} , "0000"
         )
         try:
-            hex_value  = self._current_obd_data.replace("\r","").replace(">","").lstrip().rstrip()
+            hex_value  = self._current_obd_data.replace(
+                    "\r","").replace(">","").lstrip().rstrip()
             length_hex = len( hex_value )
             if self._speed_length != length_hex:
                 response.put( "status"      , "CALCULATE_FAILED" )
@@ -48,7 +49,10 @@ class obd_pid_speed(obd_pid.obd_pid):
             obd2_hex = hex_value.split(" ")
             A        = obd2_hex[2]
             speed    = int("0x" + A , 16 )
-            print ( "[" + str(length_hex) + "] " + hex_value + " [" + str(speed) + "] KMS")
+            print ( 
+                "[" + str(length_hex) + "] " + hex_value +\
+                        " [" + str(speed) + "] KMS"
+            )
             response.put( "data" , { 
                 "pid_handler": self._current_pid_data, 
                 "pid_result" : speed 

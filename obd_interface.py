@@ -36,7 +36,7 @@ class obd_interface:
             parity   = config.G_PARITY,
             stopbits = config.G_STOPBITS,
             bytesize = config.G_BYTESIZE,
-            timeout  = 5
+            timeout  = config.G_SERIAL_TIMEOUT
         )
         """
             We initialise the connection here with the 
@@ -56,7 +56,6 @@ class obd_interface:
         while self.serial_cmd.inWaiting() > 0:
             out += self.serial_cmd.read(1)
         # end while
-        print ( out )
     # end def
 
     """
@@ -111,7 +110,10 @@ class obd_interface:
         })
         self.conn_obd_write_serial.start()
         self.conn_obd_read_serial.start()
-        blocking = params["blocking"]
+        blocking = False
+        if "blocking" in params:
+            blocking = params["blocking"]
+        # end if
         if not blocking:
             self.loop_go = False
         # end if

@@ -37,4 +37,5 @@ G_PARITY             = serial.PARITY_ODD
 G_STOPBITS           = serial.STOPBITS_TWO
 G_BYTESIZE           = serial.SEVENBITS
 G_DATA_HEADER        = "41"
+G_SERIAL_TIMEOUT     = 5
 G_INIT_DATA          = "010C \r\n".encode()

@@ -37,7 +37,8 @@ class obd_pid_rpm(obd_pid.obd_pid):
             "CALCULATE_SUCCESS", "CALCULATE SUCCESS", {} , "0000"
         )
         try:
-            hex_value  = self._current_obd_data.replace("\r","").replace(">","").lstrip().rstrip()
+            hex_value  = self._current_obd_data.replace(
+                "\r","").replace(">","").lstrip().rstrip()
             length_hex = len( hex_value )
             if self._rpm_length != length_hex:
                 response.put( "status"      , "CALCULATE_FAILED" )
@@ -51,7 +52,10 @@ class obd_pid_rpm(obd_pid.obd_pid):
             int_a    = int("0x" + A , 16 )
             int_b    = int("0x" + B , 16 )
             rpm      = ((256 * int_a) + int_b) / 4
-            print ( "[" + str(length_hex) + "] " + hex_value + " [" + str(rpm) + "] RPM")
+            print ( 
+                "[" + str(length_hex) + "] " + hex_value +\
+                        " [" + str(rpm) + "] RPM"
+            )
             response.put( "data" , { 
                 "pid_handler"    : self._current_pid_data, 
                 "pid_result"     : rpm 
