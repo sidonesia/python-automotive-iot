@@ -5,6 +5,17 @@ import os
 
 import obd_pid_rpm
 import obd_pid_speed
+import obd_pid_coolant_temp
+import obd_pid_engine_code
+import obd_pid_engine_load
+import obd_pid_fuel_status
+import obd_pid_intake_air_pressure
+import obd_pid_intake_manifold_abs
+import obd_pid_long_term_fuel
+import obd_pid_oxygen_present
+import obd_pid_short_term_fuel
+import obd_pid_throttle_position
+import obd_pid_timing_advanced
 
 class obd_pid_factory:
 
@@ -17,8 +28,20 @@ class obd_pid_factory:
     # end def
 
     def _load_pid_proc(self, params):
+        self._obd_model["0101"] = obd_pid_engine_code.obd_pid_engine_code({})
+        self._obd_model["0103"] = obd_pid_fuel_status.obd_pid_fuel_status({})
+        self._obd_model["0104"] = obd_pid_engine_load.obd_pid_engine_load({})
+        self._obd_model["0105"] = obd_pid_coolant_temp.obd_pid_coolant_temp({})
+        self._obd_model["0106"] = obd_pid_short_term_fuel_bank_one.obd_pid_short_term_fuel_bank_one({})
+        self._obd_model["0107"] = obd_pid_long_term_fuel.obd_pid_long_term_fuel({})
+        self._obd_model["010B"] = obd_pid_intake_manifold_abs.obd_pid_intake_manifold_abs({})
         self._obd_model["010C"] = obd_pid_rpm.obd_pid_rpm({})
         self._obd_model["010D"] = obd_pid_speed.obd_pid_speed({})
+        self._obd_model["010E"] = obd_pid_timing_advanced.obd_pid_timing_advanced({})
+        self._obd_model["010F"] = obd_pid_intake_air_pressure.obd_pid_intake_air_pressure({})
+        self._obd_model["0111"] = obd_pid_throttle_position.obd_pid_throttle_position({})
+        self._obd_model["0113"] = obd_pid_oxygen_present.obd_pid_oxygen_present({})
+        self._obd_model["0114"] = obd_pid_short_term_fuel.obd_pid_short_term_fuel({})
     # end def
 
     def get_pid_proc(self, params):
