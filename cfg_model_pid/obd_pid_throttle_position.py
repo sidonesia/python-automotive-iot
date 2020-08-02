@@ -16,7 +16,7 @@ from cfg_core   import helper
 import obd_pid
 
 
-class obd_pid_timing_advanced(obd_pid.obd_pid):
+class obd_pid_throttle_position(obd_pid.obd_pid):
 
 
     def __init__(self, params):
@@ -40,23 +40,23 @@ class obd_pid_timing_advanced(obd_pid.obd_pid):
             hex_value  = self._current_obd_data.replace(
                     "\r","").replace(">","").lstrip().rstrip()
             length_hex = len( hex_value )
-            if self._timing_adv != length_hex:
+            if self._throttle_pos != length_hex:
                 response.put( "status"      , "CALCULATE_FAILED" )
                 response.put( "status_code" , "0001" )
                 response.put( "desc"        , "LENGTH INCORRECT" )
                 return response
             # end if
-            obd2_hex   = hex_value.split(" ")
-            A          = obd2_hex[2]
-            int_a      = int("0x" + A , 16 )
-            timing_adv = int_a / 2 - 64
+            obd2_hex     = hex_value.split(" ")
+            A            = obd2_hex[2]
+            int_a        = int("0x" + A , 16 )
+            throttle_pos = int_a * 100 / 255
             print ( 
                 "[" + str(length_hex) + "] " + hex_value +\
-                        " [" + str(timing_adv) + "] oC"
+                        " [" + str(throttle_pos) + "] %"
             )
             response.put( "data" , { 
                 "pid_handler": self._current_pid_data, 
-                "pid_result" : timing_adv 
+                "pid_result" : throttle_pos 
             })
         except:
             print ( traceback.format_exc() )

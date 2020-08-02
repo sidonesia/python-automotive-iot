@@ -40,23 +40,29 @@ class obd_pid_short_term_fuel(obd_pid.obd_pid):
             hex_value  = self._current_obd_data.replace(
                     "\r","").replace(">","").lstrip().rstrip()
             length_hex = len( hex_value )
-            if self._st_fuel_bank1 != length_hex:
+            if self._oxygen_vol_stf != length_hex:
                 response.put( "status"      , "CALCULATE_FAILED" )
                 response.put( "status_code" , "0001" )
                 response.put( "desc"        , "LENGTH INCORRECT" )
                 return response
             # end if
-            obd2_hex = hex_value.split(" ")
-            A        = obd2_hex[2]
-            int_a    = int("0x" + A , 16 )
-            st_fuel  = int_a * 100 / 128 - 100
+            obd2_hex   = hex_value.split(" ")
+            A          = obd2_hex[2]
+            B          = obd2_hex[3]
+            int_a      = int("0x" + A , 16 )
+            int_b      = int("0x" + B , 16 )
+            volts      = int_a / 200
+            percent    = 100 / 128 * int_b - 100 
             print ( 
                 "[" + str(length_hex) + "] " + hex_value +\
-                        " [" + str(st_fuel) + "] %"
+                        " [" + str(volts) + "v " + str(percent) + "%]"
             )
             response.put( "data" , { 
-                "pid_handler": self._current_pid_data, 
-                "pid_result" : st_fuel 
+                "pid_handler" : self._current_pid_data, 
+                "pid_result"  : {
+                    "volts"   : volts,
+                    "percent" : percent
+                }
             })
         except:
             print ( traceback.format_exc() )

@@ -16,7 +16,7 @@ from cfg_core   import helper
 import obd_pid
 
 
-class obd_pid_timing_advanced(obd_pid.obd_pid):
+class obd_pid_oxygen_present(obd_pid.obd_pid):
 
 
     def __init__(self, params):
@@ -40,7 +40,7 @@ class obd_pid_timing_advanced(obd_pid.obd_pid):
             hex_value  = self._current_obd_data.replace(
                     "\r","").replace(">","").lstrip().rstrip()
             length_hex = len( hex_value )
-            if self._timing_adv != length_hex:
+            if self._oxygen_sensor != length_hex:
                 response.put( "status"      , "CALCULATE_FAILED" )
                 response.put( "status_code" , "0001" )
                 response.put( "desc"        , "LENGTH INCORRECT" )
@@ -49,14 +49,13 @@ class obd_pid_timing_advanced(obd_pid.obd_pid):
             obd2_hex   = hex_value.split(" ")
             A          = obd2_hex[2]
             int_a      = int("0x" + A , 16 )
-            timing_adv = int_a / 2 - 64
             print ( 
                 "[" + str(length_hex) + "] " + hex_value +\
-                        " [" + str(timing_adv) + "] oC"
+                        " [" + str(int_a) + "]"
             )
             response.put( "data" , { 
                 "pid_handler": self._current_pid_data, 
-                "pid_result" : timing_adv 
+                "pid_result" : int_a 
             })
         except:
             print ( traceback.format_exc() )
