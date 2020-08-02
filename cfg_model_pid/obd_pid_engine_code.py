@@ -16,7 +16,7 @@ from cfg_core   import helper
 import obd_pid
 
 
-class obd_pid_speed(obd_pid.obd_pid):
+class obd_pid_engine_code(obd_pid.obd_pid):
 
 
     def __init__(self, params):
@@ -38,24 +38,24 @@ class obd_pid_speed(obd_pid.obd_pid):
         )
         try:
             hex_value  = self._current_obd_data.replace(
-                    "\r","").replace(">","").lstrip().rstrip()
+                "\r","").replace(">","").lstrip().rstrip()
             length_hex = len( hex_value )
-            if self._speed_length != length_hex:
+            if self._engine_code != length_hex:
                 response.put( "status"      , "CALCULATE_FAILED" )
                 response.put( "status_code" , "0001" )
                 response.put( "desc"        , "LENGTH INCORRECT" )
                 return response
             # end if
-            obd2_hex = hex_value.split(" ")
-            A        = obd2_hex[2]
-            speed    = int("0x" + A , 16 )
+            obd2_hex    = hex_value.split(" ")
+            A           = obd2_hex[2]
+            engine_lamp = int("0x" + A , 16 )
             print ( 
                 "[" + str(length_hex) + "] " + hex_value +\
-                        " [" + str(speed) + "] KMS"
+                        " [" + str(engine_lamp) + "] MODE"
             )
             response.put( "data" , { 
-                "pid_handler": self._current_pid_data, 
-                "pid_result" : speed 
+                "pid_handler"    : self._current_pid_data, 
+                "pid_result"     : engine_lamp 
             })
         except:
             print ( traceback.format_exc() )
