@@ -6,13 +6,12 @@ import os
 sys.path.append("cfg_config"    )
 sys.path.append("cfg_core"      )
 sys.path.append("cfg_startup"   )
-sys.path.append("obd_model_pid" )
+sys.path.append("cfg_model_pid" )
 
 from cfg_config import config
 from cfg_core   import helper
-
-import obd_write_serial
-import obd_read_serial
+from cfg_core   import obd_write_serial
+from cfg_core   import obd_read_serial
 
 class obd_interface:
 
