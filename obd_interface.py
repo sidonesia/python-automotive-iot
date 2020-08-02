@@ -19,6 +19,7 @@ class obd_interface:
     loop_go         = True
     init_cmds       = []
     handler_list    = []
+    writer_threads  = {}
     handler_dict    = {}
     conn_obd_serial = None
 
@@ -38,6 +39,20 @@ class obd_interface:
             bytesize = config.G_BYTESIZE,
             timeout  = 5
         )
+        """
+            We initialise the connection here with the 
+                init string commands
+        """
+        is_open  = self.serial_cmd.isOpen()
+        for init in range( config.G_EVENT_INIT_RETRY ):
+            # initially write the standard commands
+            for serial_cmd in self.init_cmds:
+                self.serial_cmd.write( serial_cmd )
+                time.sleep( config.G_EVENT_INIT_TO )
+            # end for
+            self.serial_cmd.write( config.G_INIT_DATA )
+            time.sleep( config.G_EVENT_INIT_CMD_TO )
+        # end for
     # end def
 
     """
@@ -79,12 +94,18 @@ class obd_interface:
         Main event loop, will annotate later
     """
     def start(self, params):
-        self.conn_obd_write_serial = obd_write_serial.obd_write_serial({
-            "init_cmds"    : self.init_cmds,
-            "handler_list" : self.handler_list,
-            "handler_dict" : self.self.handler_dict,
-            "serial_cmd"   : self.serial_cmd
-        })
+        for handler_pid in self.handler_list:
+            handler      = handler_pid["handler"]
+            pid_value    = handler_pid["pid_value"]
+            handler_name = handler_pid["handler_name"]
+            full_pid     = pid_value + " \r\n"
+            full_pid     = full_pid.encode()
+            conn_obd_write_serial = obd_write_serial.obd_write_serial({
+                "write_pid"    : full_pid
+            })
+            self.writer_threads[pid_value] = conn_obd_write_serial
+            self.writer_threads[pid_value].start()
+        # end for
         self.conn_obd_read_serial = obd_read_serial.obd_read_serial({
             "init_cmds"    : self.init_cmds,
             "handler_list" : self.handler_list,

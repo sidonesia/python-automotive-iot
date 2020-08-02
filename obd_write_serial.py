@@ -25,8 +25,7 @@ class obd_write_serial(threading.Thread):
     def __init__(self, params):
         threading.Thread.__init__(self)
 
-        self.car_obd_cmds = params["init_cmds"]
-        self.serial_cmd   = params["serial_cmd"]
+        self.write_pid = params["write_pid"]
     # end def
 
     def write(self, params):
@@ -46,7 +45,7 @@ class obd_write_serial(threading.Thread):
         except:
             print ( traceback.format_exc() )
             response.put( "status"      , "REALTIME_FAILED" )
-            response.put( "desc" , "GENERAL ERROR" )
+            response.put( "desc"        , "GENERAL ERROR" )
             response.put( "status_code" , "9999" )
         # end try
         return response
@@ -54,28 +53,21 @@ class obd_write_serial(threading.Thread):
 
     def run(self):
         is_open  = self.serial_cmd.isOpen()
-        # initially write the standard commands
-        for serial_cmd in self.car_obd_cmds:
-            self.serial_cmd.write( serial_cmd )
-            time.sleep( 1 )
-        # end for
-        obd_resp = self.write({
-            "pid_value" : "010C".encode() + " \r\n".encode( )
-        })
-        time.sleep( 3 )
-        for serial_cmd in self.car_obd_cmds:
-            self.serial_cmd.write( serial_cmd )
-            time.sleep( 1 )
-        # end for
-        obd_resp = self.write({
-            "pid_value" : "010C".encode() + " \r\n".encode( )
-        })
-        time.sleep( 3 )
         while self.loop_go:
+            # initially write the standard commands
             obd_resp = self.write({
-                "pid_value" : "\r\n".encode( )
+                "pid_value" : self.write_pid
             })
-            time.sleep(config.G_EVENT_LOOP_WAIT)
+            time.sleep( config.G_EVENT_INIT_CMD_TO )
+            count_loop     = 0
+            count_loop_max = 10
+            while count_loop < count_loop_max:
+                obd_resp = self.write({
+                    "pid_value" : "\r\n".encode( )
+                })
+                time.sleep(config.G_EVENT_LOOP_WAIT)
+                count_loop += 1
+            # end while
         # end while
     # end def
 # end class

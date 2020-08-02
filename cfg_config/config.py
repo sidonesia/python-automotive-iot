@@ -23,14 +23,18 @@ G_CAR_INIT_CMDS = {
 
 #################### APPLICATION SPECIFIC DETAILS ####################
 
-G_EVENT_LOOP_WAIT = 0.25
-G_GENERAL_ERROR   = "9999"
+G_EVENT_LOOP_WAIT    = 0.25
+G_EVENT_INIT_TO      = 1
+G_EVENT_INIT_CMD_TO  = 3
+G_EVENT_INIT_RETRY   = 2
+G_GENERAL_ERROR      = "9999"
 
 #################### SERIAL CONNECTIVITY ####################
 
-G_SERIAL_COMM     = "/dev/rfcomm0"
-G_SERIAL_PORT     = 38400
-G_PARITY          = serial.PARITY_ODD
-G_STOPBITS        = serial.STOPBITS_TWO
-G_BYTESIZE        = serial.SEVENBITS
-G_DATA_HEADER     = "41"
+G_SERIAL_COMM        = "/dev/rfcomm0"
+G_SERIAL_PORT        = 38400
+G_PARITY             = serial.PARITY_ODD
+G_STOPBITS           = serial.STOPBITS_TWO
+G_BYTESIZE           = serial.SEVENBITS
+G_DATA_HEADER        = "41"
+G_INIT_DATA          = "010C \r\n".encode()
