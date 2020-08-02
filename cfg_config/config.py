@@ -33,3 +33,4 @@ G_SERIAL_PORT     = 38400
 G_PARITY          = serial.PARITY_ODD
 G_STOPBITS        = serial.STOPBITS_TWO
 G_BYTESIZE        = serial.SEVENBITS
+G_DATA_HEADER     = "41"

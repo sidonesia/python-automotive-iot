@@ -26,7 +26,6 @@ class obd_write_serial(threading.Thread):
         threading.Thread.__init__(self)
 
         self.car_obd_cmds = params["init_cmds"]
-        self.handler_list = params["handler_list"]
         self.serial_cmd   = params["serial_cmd"]
     # end def
 
@@ -43,7 +42,7 @@ class obd_write_serial(threading.Thread):
         pid_value = params["pid_value"]
         try:
             self.serial_cmd.write( pid_value )
-            time.sleep( 0.25 )
+            time.sleep( config.G_EVENT_LOOP_WAIT )
         except:
             print ( traceback.format_exc() )
             response.put( "status"      , "REALTIME_FAILED" )
@@ -76,14 +75,6 @@ class obd_write_serial(threading.Thread):
             obd_resp = self.write({
                 "pid_value" : "\r\n".encode( )
             })
-            """
-            for handler in self.handler_list:
-                pid_value   = handler["pid_value"]
-                obd_resp    = self.write({
-                    "pid_value" : pid_value
-                })
-            # end for
-            """
             time.sleep(config.G_EVENT_LOOP_WAIT)
         # end while
     # end def

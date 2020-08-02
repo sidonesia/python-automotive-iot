@@ -60,11 +60,13 @@ class obd_interface:
                 response.put( "status_code" , "0001" )
                 return response
             # end if
-            self.handler_list.append({
+            handler_obj = {
                 "pid_handler"   : handler,
                 "pid_value"     : pid_value,
                 "handler_name"  : handler_name
-            })
+            }
+            self.handler_list.append( handler_obj )
+            self.handler_dict[pid_value] = handler_obj
         except:
             response.put( "status"      , "REGISTER_FAILED" )
             response.put( "status_desc" , "GENERAL ERROR" )
@@ -80,15 +82,21 @@ class obd_interface:
         self.conn_obd_write_serial = obd_write_serial.obd_write_serial({
             "init_cmds"    : self.init_cmds,
             "handler_list" : self.handler_list,
+            "handler_dict" : self.self.handler_dict,
             "serial_cmd"   : self.serial_cmd
         })
         self.conn_obd_read_serial = obd_read_serial.obd_read_serial({
             "init_cmds"    : self.init_cmds,
             "handler_list" : self.handler_list,
+            "handler_dict" : self.self.handler_dict,
             "serial_cmd"   : self.serial_cmd
         })
         self.conn_obd_write_serial.start()
         self.conn_obd_read_serial.start()
+        blocking = params["blocking"]
+        if not blocking:
+            self.loop_go = False
+        # end if
         while self.loop_go:
             time.sleep(config.G_EVENT_LOOP_WAIT)
         # end while
