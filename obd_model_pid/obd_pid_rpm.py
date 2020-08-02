@@ -51,7 +51,7 @@ class obd_pid_rpm(obd_pid.obd_pid):
             int_a    = int("0x" + A , 16 )
             int_b    = int("0x" + B , 16 )
             rpm      = ((256 * int_a) + int_b) / 4
-            print ( "[" + str(length_hex) + "] " + hex_value + " [" + str(rpm) + "]")
+            print ( "[" + str(length_hex) + "] " + hex_value + " [" + str(rpm) + "] RPM")
             response.put( "data" , { 
                 "pid_handler"    : self._current_pid_data, 
                 "pid_result"     : rpm 

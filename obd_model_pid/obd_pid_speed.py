@@ -48,7 +48,7 @@ class obd_pid_speed(obd_pid.obd_pid):
             obd2_hex = hex_value.split(" ")
             A        = obd2_hex[2]
             speed    = int("0x" + A , 16 )
-            print ( "[" + str(length_hex) + "] " + hex_value + " [" + str(speed) + "]")
+            print ( "[" + str(length_hex) + "] " + hex_value + " [" + str(speed) + "] KMS")
             response.put( "data" , { 
                 "pid_handler": self._current_pid_data, 
                 "pid_result" : speed 
