@@ -20,12 +20,12 @@ class obd_pid_rpm(obd_pid.obd_pid):
 
 
     def __init__(self, params):
-        obd_pid.obd_pid.__init__(self)
+        obd_pid.obd_pid.__init__(self, params)
     # end def
 
     def _set_obd_data(self, params):
         self._current_obd_data = params["obd_data"]
-        self._current_pid_data - params["obd_pid" ]
+        self._current_pid_data = params["obd_pid" ]
     # end def
 
     def _get_pid(self, params):

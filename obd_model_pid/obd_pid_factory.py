@@ -16,15 +16,19 @@ class obd_pid_factory:
     # end def
 
     def _load_pid_proc(self, params):
-        self._obd_model["010C"] = obd_pid_rpm.obd_pid_rpm()
+        self._obd_model["010C"] = obd_pid_rpm.obd_pid_rpm({})
     # end def
 
     def get_pid_proc(self, params):
         obd_data        = params["obd_data"]
-        obd_array       = self._current_obd_data.split(" ")
+        hex_value       = obd_data.replace("\r","").replace(">","").lstrip().rstrip()
+        obd_array       = hex_value.split(" ")
         pid_header      = obd_array[1]
         pid             = "01" + pid_header
         pid             = pid.upper()
+        if not pid in self._obd_model:
+            return None
+        # end if
         obd_model_proc  = self._obd_model[pid]
         obd_model_proc._set_obd_data({
             "obd_data"  : obd_data,

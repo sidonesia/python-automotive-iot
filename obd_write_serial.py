@@ -25,7 +25,8 @@ class obd_write_serial(threading.Thread):
     def __init__(self, params):
         threading.Thread.__init__(self)
 
-        self.write_pid = params["write_pid"]
+        self.write_pid  = params["write_pid"]
+        self.serial_cmd = params["serial_cmd"]
     # end def
 
     def write(self, params):
@@ -60,7 +61,7 @@ class obd_write_serial(threading.Thread):
             })
             time.sleep( config.G_EVENT_INIT_CMD_TO )
             count_loop     = 0
-            count_loop_max = 10
+            count_loop_max = 20
             while count_loop < count_loop_max:
                 obd_resp = self.write({
                     "pid_value" : "\r\n".encode( )
