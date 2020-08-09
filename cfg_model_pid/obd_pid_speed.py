@@ -55,7 +55,9 @@ class obd_pid_speed(obd_pid.obd_pid):
             )
             response.put( "data" , { 
                 "pid_handler": self._current_pid_data, 
-                "pid_result" : speed 
+                "pid_result" : speed,
+                "pid_raw"    : hex_value,
+                "pid_unit"   : "KMS"
             })
         except:
             print ( traceback.format_exc() )

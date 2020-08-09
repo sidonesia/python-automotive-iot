@@ -58,7 +58,9 @@ class obd_pid_rpm(obd_pid.obd_pid):
             )
             response.put( "data" , { 
                 "pid_handler"    : self._current_pid_data, 
-                "pid_result"     : rpm 
+                "pid_result"     : rpm,
+                "pid_raw"        : hex_value,
+                "pid_unit"       : "RPM"
             })
         except:
             print ( traceback.format_exc() )

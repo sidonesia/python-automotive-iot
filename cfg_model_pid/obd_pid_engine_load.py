@@ -55,7 +55,9 @@ class obd_pid_engine_load(obd_pid.obd_pid):
             )
             response.put( "data" , { 
                 "pid_handler"    : self._current_pid_data, 
-                "pid_result"     : engine_load 
+                "pid_result"     : engine_load,
+                "pid_raw"        : hex_value,
+                "pid_unit"       : "%"
             })
         except:
             print ( traceback.format_exc() )

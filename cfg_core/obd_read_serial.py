@@ -64,8 +64,11 @@ class obd_read_serial(threading.Thread):
                             pid_resp = obd_model._calculate({})
                             status_code = pid_resp.get("status_code")
                             if status_code == "0000":
-                                pid_id = pid_resp.get("data")["pid_handler"]
-                                # self.handler_dict[pid_id].execute({})
+                                pid_json = pid_resp.get("data")
+                                pid_id   = pid_json["pid_handler"]
+                                self.handler_dict[pid_id].execute({
+                                    "pid_json" : pid_json
+                                })
                             # end if
                         else:
                             print (

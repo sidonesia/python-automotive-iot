@@ -59,9 +59,14 @@ class obd_pid_short_term_fuel(obd_pid.obd_pid):
             )
             response.put( "data" , { 
                 "pid_handler" : self._current_pid_data, 
+                "pid_raw"     : hex_value,
                 "pid_result"  : {
                     "volts"   : volts,
                     "percent" : percent
+                },
+                "pid_unit"    : {
+                    "volts"   : "v",
+                    "percent" : "%"
                 }
             })
         except:

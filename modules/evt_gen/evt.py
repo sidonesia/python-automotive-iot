@@ -12,7 +12,7 @@ sys.path.append("cfg_model_pid" )
 from cfg_config import config
 from cfg_core   import helper
 
-class evt_rpm:
+class evt:
 
     _pid      = None
     _pid_name = None
@@ -34,24 +34,18 @@ class evt_rpm:
             "EVENT_EXECUTE_SUCCESS", "EXECUTE SUCCESS", {} , "0000"
         )
         try:
-            result   = params["pid_result"]
-            hex_code = params["pid_raw"]
-            units    = params["pid_unit"]
-            pid_resp = requests.post(
-                config.G_AUTOVIA_CORE + config.G_PID_UPDATE_URL,
-                data = {
-                    "name"      : self._pid_name,
-                    "pid"       : self._pid,
-                    "value"     : result,
-                    "hex_code"  : hex_code,
-                    "unit"      : units
-                }
-            )
-            #
-            # we might write to database and do other things here 
-            #   later, but for now just post to the core
-            #   application that provides visuals
-            #
+            pid_handler = params["pid_handler"]
+            pid_result  = params["pid_result"]
+            pid_unit    = params["pid_unit"]
+            pid_raw     = params["pid_raw"]
+            response.put( "data" , {
+                "pid"     : self._pid,
+                "name"    : self._pid_name,
+                "handler" : pid_handler,
+                "result"  : pid_result,
+                "raw"     : pid_raw,
+                "unit"    : pid_unit
+            })
         except:
             self.webapp.logger.debug(  traceback.format_exc()  )
             response.put( "status"      , "EVENT_EXECUTE_FAILED" )

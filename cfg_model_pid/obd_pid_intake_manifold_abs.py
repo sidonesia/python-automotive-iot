@@ -55,7 +55,9 @@ class obd_pid_intake_manifold_abs(obd_pid.obd_pid):
             )
             response.put( "data" , { 
                 "pid_handler": self._current_pid_data, 
-                "pid_result" : int_a 
+                "pid_result" : int_a,
+                "pid_raw"    : hex_value,
+                "pid_unit"   : "kPa"
             })
         except:
             print ( traceback.format_exc() )

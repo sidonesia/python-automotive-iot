@@ -57,7 +57,9 @@ class obd_pid_coolant_temp(obd_pid.obd_pid):
             )
             response.put( "data" , { 
                 "pid_handler": self._current_pid_data, 
-                "pid_result" : coolant_temp 
+                "pid_result" : coolant_temp,
+                "pid_raw"    : hex_value,
+                "pid_unit"   : "o.C"
             })
         except:
             print ( traceback.format_exc() )

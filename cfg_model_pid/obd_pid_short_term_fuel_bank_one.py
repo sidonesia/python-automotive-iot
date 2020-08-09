@@ -56,7 +56,9 @@ class obd_pid_short_term_fuel_bank_one(obd_pid.obd_pid):
             )
             response.put( "data" , { 
                 "pid_handler" : self._current_pid_data, 
-                "pid_result"  : st_fuel
+                "pid_result"  : st_fuel,
+                "pid_raw"     : hex_value,
+                "pid_unit"    : "%"
             })
         except:
             print ( traceback.format_exc() )

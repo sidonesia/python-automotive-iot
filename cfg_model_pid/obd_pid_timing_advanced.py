@@ -56,7 +56,9 @@ class obd_pid_timing_advanced(obd_pid.obd_pid):
             )
             response.put( "data" , { 
                 "pid_handler": self._current_pid_data, 
-                "pid_result" : timing_adv 
+                "pid_result" : timing_adv,
+                "pid_raw"    : hex_value,
+                "pid_unit"   : "o.C"
             })
         except:
             print ( traceback.format_exc() )

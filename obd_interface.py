@@ -3,15 +3,20 @@ import serial
 import sys
 import os
 
-sys.path.append("cfg_config"    )
-sys.path.append("cfg_core"      )
-sys.path.append("cfg_startup"   )
-sys.path.append("cfg_model_pid" )
+sys.path.append("cfg_config"     )
+sys.path.append("cfg_core"       )
+sys.path.append("cfg_startup"    )
+sys.path.append("cfg_model_pid"  )
+
+sys.path.append("modules" )
+sys.path.append("modules/evt_gen")
 
 from cfg_config import config
 from cfg_core   import helper
 from cfg_core   import obd_write_serial
 from cfg_core   import obd_read_serial
+
+from evt_gen    import evt
 
 class obd_interface:
 
@@ -78,6 +83,13 @@ class obd_interface:
                 response.put( "status_code" , "0001" )
                 return response
             # end if
+            #
+            if handler == None:
+                handler = evt.evt()
+            # end if
+            #
+            handler.set_event_pid({ "event_pid"  : pid_value    })
+            handler.set_event_pid({ "event_name" : handler_name })
             handler_obj = {
                 "pid_handler"   : handler,
                 "pid_value"     : pid_value,

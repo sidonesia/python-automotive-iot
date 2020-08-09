@@ -55,7 +55,9 @@ class obd_pid_oxygen_present(obd_pid.obd_pid):
             )
             response.put( "data" , { 
                 "pid_handler": self._current_pid_data, 
-                "pid_result" : int_a 
+                "pid_result" : int_a,
+                "pid_raw"    : hex_value,
+                "pid_unit"   : "FIXED_VALUE"
             })
         except:
             print ( traceback.format_exc() )

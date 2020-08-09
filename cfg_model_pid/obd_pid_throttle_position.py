@@ -56,7 +56,9 @@ class obd_pid_throttle_position(obd_pid.obd_pid):
             )
             response.put( "data" , { 
                 "pid_handler": self._current_pid_data, 
-                "pid_result" : throttle_pos 
+                "pid_result" : throttle_pos,
+                "pid_raw"    : hex_value,
+                "pid_unit"   : "%"
             })
         except:
             print ( traceback.format_exc() )

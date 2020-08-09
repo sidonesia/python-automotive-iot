@@ -57,7 +57,9 @@ class obd_pid_fuel_status(obd_pid.obd_pid):
             )
             response.put( "data" , { 
                 "pid_handler": self._current_pid_data, 
-                "pid_result" : str(int_a) + " " + str(int_b)
+                "pid_result" : str(int_a) + " " + str(int_b),
+                "pid_raw"    : hex_value,
+                "pid_unit"   : "BINARY"
             })
         except:
             print ( traceback.format_exc() )

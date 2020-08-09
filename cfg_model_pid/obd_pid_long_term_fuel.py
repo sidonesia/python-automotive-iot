@@ -56,7 +56,9 @@ class obd_pid_long_term_fuel(obd_pid.obd_pid):
             )
             response.put( "data" , { 
                 "pid_handler": self._current_pid_data, 
-                "pid_result" : lt_fuel 
+                "pid_result" : lt_fuel,
+                "pid_raw"    : hex_value,
+                "pid_unit"   : "%"
             })
         except:
             print ( traceback.format_exc() )
